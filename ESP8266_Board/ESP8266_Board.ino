@@ -20,6 +20,10 @@
 
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
+#include <SimpleDHT.h>
+
+SimpleDHT11 dht11;
+
 // which analog pin to connect
 #define THERMISTORPIN A0         
 // resistance at 25 degrees C
@@ -33,10 +37,11 @@
 #define BCOEFFICIENT 3950
 // the value of the 'other' resistor
 #define SERIESRESISTOR 10000    
+// dht11 pin
+#define DHT11PIN 16
 
 int samples[NUMSAMPLES];
 
-#define LED 14
 #define DELAY_MSG 2000
 
 // Wifi definitions and MQTT topic
@@ -46,8 +51,11 @@ const char* mqtt_server = "192.168.1.100";
 #define port 1883
 
 // TOPIC
-#define inTopic "esp01/led"
-#define outTopic "esp01/temp"
+#define ledTopic "esp01/led"
+#define systemTopic "esp01/sys"
+#define tempATopic "esp01/tempA"
+#define tempDTopic "esp01/tempD"
+#define humDTopic "esp01/humD"
 
 
 WiFiClient espClient;
@@ -56,8 +64,19 @@ unsigned long lastMsg = 0;
 #define MSG_BUFFER_SIZE	(50)
 char msg[MSG_BUFFER_SIZE];
 
+// VARIABILI
+float AnalogTemp = 0;
+
+unsigned long now = 0;
+
+int DigitalTemp = 0;
+int DigitalHumidity = 0;
+int old_DigitalTemp = 0;
+int old_DigitalHumidity = 0;
+
 // Prototipi delle funzioni
 float Temperature();
+void ReadDHT();
 void setup_wifi();
 void callback(char* topic, byte* payload, unsigned int length);
 void reconnect();
@@ -73,30 +92,61 @@ void setup() {
 
 // MAIN LOOP
 void loop() {
-
-  float temp;
+  
   //verifico di essere connesso
   if (!client.connected()) {
     reconnect();
   }
   client.loop();
-  // calcolo il delay tra un messaggio e l'altro
-  unsigned long now = millis();
-  if (now - lastMsg > DELAY_MSG) {
-    lastMsg = now;
-    // calcolo la temperatura
-    temp = Temperature();
-    snprintf (msg, MSG_BUFFER_SIZE, "%1f °C", temp);
-    Serial.print("Publish message: ");
-    Serial.println(msg);
-    client.publish(outTopic, msg);
-  }
+  
+    // calcolo la temperatura Analogica
+      AnalogTemp = Temperature();
+      snprintf (msg, MSG_BUFFER_SIZE, "%1f °C", AnalogTemp);
+      Serial.print("Publish Analog TMP message: ");
+      Serial.println(msg);
+      client.publish(tempATopic, msg);
+
+    // Read DHT11
+    ReadDHT();
+
+      snprintf (msg, MSG_BUFFER_SIZE, "%1d", DigitalTemp);
+      Serial.print("Publish DHT11 TMP message: ");
+      Serial.println(msg);
+      client.publish(tempDTopic, msg);
+      
+      snprintf (msg, MSG_BUFFER_SIZE, "%1d", DigitalHumidity);
+      Serial.print("Publish DHT11 HUM message: ");
+      Serial.println(msg);
+      client.publish(humDTopic, msg);
+
+      //now = millis();
+      
+    Serial.println("----------------------------------------------"); //print to serial monitor
+    delay(5000);
 }
+
+void ReadDHT(){
+    // read with raw sample data.
+    byte temperature = 0;
+    byte humidity = 0;
+    byte data[40] = {0};
+
+    // calcolo DHT11
+    if (dht11.read(DHT11PIN, &temperature, &humidity, data)) {
+      Serial.print("Read DHT11 failed");
+      return;
+    }
+
+    DigitalTemp = (int)temperature;
+    DigitalHumidity = (int)humidity;
+
+    return;
+  
+  }
 
 float Temperature(){
   uint8_t i;
   float average;
-
   // take N samples in a row, with a slight delay
   for (i=0; i< NUMSAMPLES; i++) {
    samples[i] = analogRead(THERMISTORPIN);
@@ -171,9 +221,6 @@ void callback(char* topic, byte* payload, unsigned int length) {
   // Switch on the LED if an 1 was received as first character
   if ((char)payload[0] == '1') {
     digitalWrite(BUILTIN_LED, LOW);   // Turn the LED on (Note that LOW is the voltage level
-    digitalWrite(LED,LOW);
-    // but actually the LED is on; this is because
-    // it is active low on the ESP-01)
   } else {
     digitalWrite(BUILTIN_LED, HIGH);  // Turn the LED off by making the voltage HIGH
   }
@@ -191,9 +238,9 @@ void reconnect() {
     if (client.connect(clientId.c_str())) {
       Serial.println("connected");
       // Once connected, publish an announcement...
-      client.publish(outTopic, "start");
+      client.publish(systemTopic, "start");
       // ... and resubscribe
-      client.subscribe(inTopic);
+      client.subscribe(ledTopic);
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());

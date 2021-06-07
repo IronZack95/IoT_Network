@@ -103,11 +103,11 @@ void loop() {
 
   Serial.println("----------------------------------------------"); //print to serial monitor
  
-  digitalWrite(BUILTIN_LED,HIGH);//turn the integrated led on
+  //digitalWrite(BUILTIN_LED,HIGH);//turn the integrated led on
   
   delay(5000);
 
-  digitalWrite(BUILTIN_LED,LOW);//turn the integrated led off
+  //digitalWrite(BUILTIN_LED,LOW);//turn the integrated led off
 }
 
 
