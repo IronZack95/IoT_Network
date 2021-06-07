@@ -39,12 +39,13 @@ int samples[NUMSAMPLES];
 #define LED 14
 #define DELAY_MSG 2000
 
-// Update these with values suitable for your network.
-
+// Wifi definitions and MQTT topic
 const char* ssid = "Vodafone-25757949";
 const char* password = "2pwjsfvj4c3emek";
 const char* mqtt_server = "192.168.1.100";
 #define port 1883
+
+// TOPIC
 #define inTopic "esp01/led"
 #define outTopic "esp01/temp"
 
@@ -128,7 +129,7 @@ float Temperature(){
   
   Serial.print("Temperature "); 
   Serial.print(steinhart);
-  Serial.println(" *C");
+  Serial.println(" °C");
 
   return steinhart;
   }
