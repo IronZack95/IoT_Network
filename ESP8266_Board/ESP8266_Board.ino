@@ -18,11 +18,33 @@
   - Select your ESP8266 in "Tools -> Board"
 */
 
+// Wifi library
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
-#include <SimpleDHT.h>
 
-SimpleDHT11 dht11;
+// Sensors library
+#include <SimpleDHT.h>
+#include <CCS811.h>
+
+// OLED library
+#include <SPI.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+
+// OLED Define
+#define SCREEN_WIDTH 128 // OLED display width, in pixels
+#define SCREEN_HEIGHT 32 // OLED display height, in pixels
+#define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
+#define SCREEN_ADDRESS 0x3C ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+#define NUMFLAKES     10 // Number of snowflakes in the animation example
+#define LOGO_HEIGHT   16
+#define LOGO_WIDTH    16
+
+// I2C ADDRESS
+#define OLEDAddress 0x3C
+#define CO2Address  0x5A
 
 // which analog pin to connect
 #define THERMISTORPIN A0         
@@ -56,10 +78,16 @@ const char* mqtt_server = "192.168.1.100";
 #define tempATopic "esp01/tempA"
 #define tempDTopic "esp01/tempD"
 #define humDTopic "esp01/humD"
+#define CO2Topic "esp01/CO2"
+#define TVOCTopic "esp01/TVOC"
 
-
+// Objects
 WiFiClient espClient;
 PubSubClient client(espClient);
+SimpleDHT11 dht11;
+//CCS811 sensor(&Wire, /*IIC_ADDRESS=*/0x5A);
+CCS811 sensor;
+
 unsigned long lastMsg = 0;
 #define MSG_BUFFER_SIZE	(50)
 char msg[MSG_BUFFER_SIZE];
@@ -73,31 +101,72 @@ int DigitalTemp = 0;
 int DigitalHumidity = 0;
 int old_DigitalTemp = 0;
 int old_DigitalHumidity = 0;
+int CO2 = 0;
+int TVOC = 0;
 
 // Prototipi delle funzioni
 float Temperature();
 void ReadDHT();
+void ReadCO2();
 void setup_wifi();
 void callback(char* topic, byte* payload, unsigned int length);
 void reconnect();
 
-// SETUP
+// ------------------ SETUP ------------------
 void setup() {
-  pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
+  // Inizializzo Seriale
   Serial.begin(115200);
+  Serial.println("------------------------------"); //print to serial monitor
+  Serial.println("----------Iron ESP01----------"); //print to serial monitor
+  Serial.println("----------by Z A C K----------"); //print to serial monitor
+  Serial.println("------------------------------"); //print to serial monitor
+  
+  // Inizializzo Pin
+  pinMode(BUILTIN_LED, OUTPUT);
+  
+  // Inizializzo Display
+  if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+    Serial.println(F("SSD1306 allocation failed"));
+    for(;;); // Don't proceed, loop forever
+  }
+  display.display();
+  delay(2000); // Pause for 2 seconds
+  display.clearDisplay();
+
+  //Inizializzo CO2
+  while(sensor.begin() != 0){
+      Serial.println("failed to init chip, please check if the chip connection is fine");
+      delay(1000);
+  }
+    /**
+   * @brief Set measurement cycle
+   * @param cycle:in typedef enum{
+   *                  eClosed,      //Idle (Measurements are disabled in this mode)
+   *                  eCycle_1s,    //Constant power mode, IAQ measurement every second
+   *                  eCycle_10s,   //Pulse heating mode IAQ measurement every 10 seconds
+   *                  eCycle_60s,   //Low power pulse heating mode IAQ measurement every 60 seconds
+   *                  eCycle_250ms  //Constant power mode, sensor measurement every 250ms
+   *                  }eCycle_t;
+   */
+  sensor.setMeasCycle(sensor.eCycle_250ms);
+    
+  // Inizializzo WiFi
   setup_wifi();
   client.setServer(mqtt_server, port);
   client.setCallback(callback);
 }
 
-// MAIN LOOP
+
+
+
+// ------------------ MAIN LOOP ------------------
 void loop() {
   
-  //verifico di essere connesso
-  if (!client.connected()) {
-    reconnect();
-  }
-  client.loop();
+    //verifico di essere connesso
+    if (!client.connected()) {
+      reconnect();
+    }
+    client.loop();
   
     // calcolo la temperatura Analogica
       AnalogTemp = Temperature();
@@ -106,147 +175,38 @@ void loop() {
       Serial.println(msg);
       client.publish(tempATopic, msg);
 
+    // Read CCS811
+    ReadCO2();
+
     // Read DHT11
     ReadDHT();
 
-      snprintf (msg, MSG_BUFFER_SIZE, "%1d", DigitalTemp);
-      Serial.print("Publish DHT11 TMP message: ");
-      Serial.println(msg);
-      client.publish(tempDTopic, msg);
-      
-      snprintf (msg, MSG_BUFFER_SIZE, "%1d", DigitalHumidity);
-      Serial.print("Publish DHT11 HUM message: ");
-      Serial.println(msg);
-      client.publish(humDTopic, msg);
+    snprintf (msg, MSG_BUFFER_SIZE, "%1d", CO2);
+    Serial.print("Publish CO2 message: ");
+    Serial.println(msg);
+    client.publish(CO2Topic, msg);
+        
+    snprintf (msg, MSG_BUFFER_SIZE, "%1d", TVOC);
+    Serial.print("Publish CO2 message: ");
+    Serial.println(msg);
+    client.publish(TVOCTopic, msg);
+    
+    snprintf (msg, MSG_BUFFER_SIZE, "%1d", DigitalTemp);
+    Serial.print("Publish DHT11 TMP message: ");
+    Serial.println(msg);
+    client.publish(tempDTopic, msg);
+    
+    snprintf (msg, MSG_BUFFER_SIZE, "%1d", DigitalHumidity);
+    Serial.print("Publish DHT11 HUM message: ");
+    Serial.println(msg);
+    client.publish(humDTopic, msg);
 
-      //now = millis();
-      
+    
+    
+    //now = millis();
+    Monitor();
+
     Serial.println("----------------------------------------------"); //print to serial monitor
     delay(5000);
-}
 
-void ReadDHT(){
-    // read with raw sample data.
-    byte temperature = 0;
-    byte humidity = 0;
-    byte data[40] = {0};
-
-    // calcolo DHT11
-    if (dht11.read(DHT11PIN, &temperature, &humidity, data)) {
-      Serial.print("Read DHT11 failed");
-      return;
-    }
-
-    DigitalTemp = (int)temperature;
-    DigitalHumidity = (int)humidity;
-
-    return;
-  
-  }
-
-float Temperature(){
-  uint8_t i;
-  float average;
-  // take N samples in a row, with a slight delay
-  for (i=0; i< NUMSAMPLES; i++) {
-   samples[i] = analogRead(THERMISTORPIN);
-   delay(10);
-  }
-  
-  // average all the samples out
-  average = 0;
-  for (i=0; i< NUMSAMPLES; i++) {
-     average += samples[i];
-  }
-  average /= NUMSAMPLES;
-
-  Serial.print("Average analog reading "); 
-  Serial.println(average);
-  
-  // convert the value to resistance
-  average = 1023 / average - 1;
-  average = SERIESRESISTOR / average;
-  Serial.print("Thermistor resistance "); 
-  Serial.println(average);
-  
-  float steinhart;
-  steinhart = average / THERMISTORNOMINAL;     // (R/Ro)
-  steinhart = log(steinhart);                  // ln(R/Ro)
-  steinhart /= BCOEFFICIENT;                   // 1/B * ln(R/Ro)
-  steinhart += 1.0 / (TEMPERATURENOMINAL + 273.15); // + (1/To)
-  steinhart = 1.0 / steinhart;                 // Invert
-  steinhart -= 273.15;                         // convert absolute temp to C
-  
-  Serial.print("Temperature "); 
-  Serial.print(steinhart);
-  Serial.println(" °C");
-
-  return steinhart;
-  }
-
-void setup_wifi(){
-
-  delay(10);
-  // We start by connecting to a WiFi network
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-
-  randomSeed(micros());
-
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
-}
-
-
-void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Message arrived [");
-  Serial.print(topic);
-  Serial.print("] ");
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
-  }
-  Serial.println();
-
-  // Switch on the LED if an 1 was received as first character
-  if ((char)payload[0] == '1') {
-    digitalWrite(BUILTIN_LED, LOW);   // Turn the LED on (Note that LOW is the voltage level
-  } else {
-    digitalWrite(BUILTIN_LED, HIGH);  // Turn the LED off by making the voltage HIGH
-  }
-
-}
-
-void reconnect() {
-  // Loop until we're reconnected
-  while (!client.connected()) {
-    Serial.print("Attempting MQTT connection...");
-    // Create a random client ID
-    String clientId = "ESP8266Client-";
-    clientId += String(random(0xffff), HEX);
-    // Attempt to connect
-    if (client.connect(clientId.c_str())) {
-      Serial.println("connected");
-      // Once connected, publish an announcement...
-      client.publish(systemTopic, "start");
-      // ... and resubscribe
-      client.subscribe(ledTopic);
-    } else {
-      Serial.print("failed, rc=");
-      Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
-      // Wait 5 seconds before retrying
-      delay(5000);
-    }
-  }
 }
