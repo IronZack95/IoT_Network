@@ -123,6 +123,7 @@ void setup() {
   
   // Inizializzo Pin
   pinMode(BUILTIN_LED, OUTPUT);
+  digitalWrite(BUILTIN_LED, HIGH); // spengo led
   
   // Inizializzo Display
   if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
@@ -130,8 +131,9 @@ void setup() {
     for(;;); // Don't proceed, loop forever
   }
   display.display();
-  delay(2000); // Pause for 2 seconds
   display.clearDisplay();
+  MonitorStart();
+  delay(1000);
 
   //Inizializzo CO2
   while(sensor.begin() != 0){
@@ -162,18 +164,23 @@ void setup() {
 // ------------------ MAIN LOOP ------------------
 void loop() {
   
-    //verifico di essere connesso
-    if (!client.connected()) {
-      reconnect();
+    //verifico di essere connesso al wifi
+    if(WiFi.status() != WL_CONNECTED){
+      setup_wifi();
+    }else{
+      // verifico la connessione all'MQTT Brocker
+      if (!client.connected()) {
+        reconnect();
+      }
+      client.loop();
     }
-    client.loop();
-  
+    
     // calcolo la temperatura Analogica
-      AnalogTemp = Temperature();
-      snprintf (msg, MSG_BUFFER_SIZE, "%1f °C", AnalogTemp);
-      Serial.print("Publish Analog TMP message: ");
-      Serial.println(msg);
-      client.publish(tempATopic, msg);
+    AnalogTemp = Temperature();
+    snprintf (msg, MSG_BUFFER_SIZE, "%1f °C", AnalogTemp);
+    Serial.print("Publish Analog TMP message: ");
+    Serial.println(msg);
+    client.publish(tempATopic, msg);
 
     // Read CCS811
     ReadCO2();
@@ -204,7 +211,7 @@ void loop() {
     
     
     //now = millis();
-    Monitor();
+    MonitorSensors();
 
     Serial.println("----------------------------------------------"); //print to serial monitor
     delay(5000);

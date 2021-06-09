@@ -41,7 +41,7 @@ int sensorValue = 0;
 float old_temperature = 0;
 float old_humid = 0;
 int old_sensorValue = 0;
-float temperature_deviation = 10.0; //enter the deviation from the mq2 due to the resulting heat in order to calibrate the temperature value 
+float temperature_deviation = 4.0; //enter the deviation from the mq2 due to the resulting heat in order to calibrate the temperature value 
 float temperature_calibrated = 0; //final value
 
 // SETUP
@@ -53,8 +53,12 @@ void setup(){
   Serial.println("----------by Z A C K----------"); //print to serial monitor
   Serial.println("------------------------------"); //print to serial monitor
 
+  // Analog pin
   pinMode(analogInPin,INPUT);       //set ADC-pin as a input
-  pinMode(BUILTIN_LED, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
+  
+  //Inizializzo Led
+  pinMode(BUILTIN_LED, OUTPUT);
+  digitalWrite(BUILTIN_LED, HIGH); // spengo led
   setup_wifi();
   client.setServer(mqtt_server, port);
   client.setCallback(callback);
@@ -65,10 +69,16 @@ void setup(){
 void loop() {
 
   //verifico di essere connesso
-  if (!client.connected()) {
-    reconnect();
-  }
-  client.loop();
+  if(WiFi.status() != WL_CONNECTED){
+      setup_wifi();
+    }else{
+      // verifico la connessione all'MQTT Brocker
+      if (!client.connected()) {
+        reconnect();
+      }
+      client.loop();
+    }
+    
   // Leggo i sensori
   ReadSensors();
 
@@ -76,7 +86,6 @@ void loop() {
   SerialComunication();
 
   // MQTT Pubblish
-  
   if(temperature != old_temperature){
     old_temperature = temperature;
     snprintf (msg, MSG_BUFFER_SIZE, "%1f °C", temperature_calibrated);

@@ -1,24 +1,58 @@
-void Monitor2(void) {
+void MonitorStart(void) {
   display.clearDisplay();
 
-  display.setTextSize(1);      // Normal 1:1 pixel scale
+  display.setTextSize(2);      // Normal 1:1 pixel scale
   display.setTextColor(SSD1306_WHITE); // Draw white text
   display.setCursor(0, 0);     // Start at top-left corner
-  display.cp437(true);         // Use full 256 char 'Code Page 437' font
-
-  // Not all the characters will fit on the display. This is normal.
-  // Library will draw what it can and the rest will be clipped.
-  for(int16_t i=0; i<256; i++) {
-    if(i == '\n') display.write(' ');
-    else          display.write(i);
-  }
-
+  display.println(F(" ESP - 01"));
+  display.println(F(" by Zack"));
   display.display();
   delay(2000);
 }
 
+void MonitorSetup(int i) {
+  if(i == 0){
+    display.clearDisplay();
+    display.setTextSize(1);      // Normal 1:1 pixel scale
+    display.setTextColor(SSD1306_WHITE); // Draw white text
+    display.setCursor(0, 0);     // Start at top-left corner
+    display.println(F("Connecting to ")); 
+    display.println(ssid);
+    display.display();
+  }
+  if(i == 1){
+    display.print(F("."));
+    display.display();
+  }
+  if(i == 2){
+    display.clearDisplay();
+    display.setTextSize(1);      // Normal 1:1 pixel scale
+    display.setTextColor(SSD1306_WHITE); // Draw white text
+    display.setCursor(0, 0);     // Start at top-left corner
+    display.println(F("WiFi connected!"));
+    display.println(F("IP address: ")); 
+    display.println(WiFi.localIP());
+    display.display();
+  }
+}
 
-void Monitor(void) {
+void MonitorReconnect(int i) {
+    display.clearDisplay();
+    display.setTextSize(1);      // Normal 1:1 pixel scale
+    display.setTextColor(SSD1306_WHITE); // Draw white text
+    display.setCursor(0, 0);     // Start at top-left corner
+    display.println(F("MQTT connection.. at")); 
+    display.println(mqtt_server);
+  if(i == 1){
+    display.println(F("SUCCESS !!")); 
+  }
+  if(i == 2){
+    display.println(F("Failed.. wait")); 
+  }
+  display.display();
+}
+
+void MonitorSensors(void) {
   display.clearDisplay();
   display.setTextSize(1);             // Normal 1:1 pixel scale
   display.setTextColor(SSD1306_WHITE);        // Draw white text
