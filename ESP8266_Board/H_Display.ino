@@ -10,6 +10,18 @@ void MonitorStart(void) {
   delay(2000);
 }
 
+void MonitorSleep(unsigned long t) {
+    display.clearDisplay();
+    display.setTextSize(2);      // Normal 1:1 pixel scale
+    display.setTextColor(SSD1306_WHITE); // Draw white text
+    display.setCursor(0, 0);     // Start at top-left corner
+    display.println(F("DEEP SLEEP")); 
+    display.print(t/1e6);display.println(F(" s"));
+    display.println(ssid);
+    display.display();
+  
+}
+
 void MonitorSetup(int i) {
   if(i == 0){
     display.clearDisplay();
@@ -71,4 +83,12 @@ void MonitorSensors(void) {
   */
   display.display();
   //delay(2000);
+}
+
+void sleepDisplay(Adafruit_SSD1306* display) {
+  display->ssd1306_command(SSD1306_DISPLAYOFF);
+}
+
+void wakeDisplay(Adafruit_SSD1306* display) {
+  display->ssd1306_command(SSD1306_DISPLAYON);
 }

@@ -1,5 +1,5 @@
 void setup_wifi(){
-
+  
   delay(10);
   // We start by connecting to a WiFi network
   Serial.println();
@@ -15,15 +15,20 @@ void setup_wifi(){
     delay(500);
     Serial.print(".");
     MonitorSetup(1);
+    WIFIAttempt++; 
+    if(WIFIAttempt >= MAX_WIFI_ATTEMPT){
+          Sleep(20e6);  // sleep 20 secondi
+      }
   }
 
+  
   randomSeed(micros());
 
   Serial.println("");
-  Serial.println("WiFi connected");
+  Serial.print("WiFi connected after "); Serial.print(WIFIAttempt); Serial.println(" attempts");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
-
+  WIFIAttempt = 0; 
   // Display
   MonitorSetup(2);
   delay(2000);
@@ -58,7 +63,8 @@ void reconnect() {
     clientId += String(random(0xffff), HEX);
     // Attempt to connect
     if (client.connect(clientId.c_str())) {
-      Serial.println("connected");
+      Serial.println("connected after "); Serial.print(MQTTAttempt); Serial.println(" attempts");
+      MQTTAttempt = 0;
       MonitorReconnect(1);
       // Once connected, publish an announcement...
       client.publish(systemTopic, "start");
@@ -71,6 +77,19 @@ void reconnect() {
       Serial.println(" try again in 5 seconds");
       // Wait 5 seconds before retrying
       delay(5000);
+      MQTTAttempt++; 
+      if(MQTTAttempt >= MAX_MQTT_ATTEMPT){
+            Sleep(60e6);  // sleep 1 minuti
+        }
     }
   }
 }
+
+void Sleep(unsigned long t){
+  Serial.print("DEEP SLEEP MODE for "); Serial.print(t); Serial.println("s");
+  MonitorSleep(t);
+  delay(5000); // 5 sec
+  sleepDisplay(&display);
+  ESP.deepSleep(t);
+  return;
+  }
