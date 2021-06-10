@@ -86,9 +86,10 @@ void reconnect() {
 }
 
 void Sleep(unsigned long t){
-  Serial.print("DEEP SLEEP MODE for "); Serial.print(t); Serial.println("s");
+  Serial.print("DEEP SLEEP MODE for "); Serial.print(t/1e6); Serial.println("s");
   MonitorSleep(t);
   delay(5000); // 5 sec
+  sensor.setMeasCycle(sensor.eClosed);
   sleepDisplay(&display);
   ESP.deepSleep(t);
   return;

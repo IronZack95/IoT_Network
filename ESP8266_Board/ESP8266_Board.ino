@@ -86,8 +86,6 @@ unsigned long now = 0;
 
 int DigitalTemp = 0;
 int DigitalHumidity = 0;
-int old_DigitalTemp = 0;
-int old_DigitalHumidity = 0;
 int CO2 = 0;
 int TVOC = 0;
 
@@ -131,7 +129,7 @@ void setup() {
     /**
    * @brief Set measurement cycle
    * @param cycle:in typedef enum{
-   *                  eClosed,      //Idle (Measurements are disabled in this mode)
+   *                  ,      //Idle (Measurements are disabled in this mode)
    *                  eCycle_1s,    //Constant power mode, IAQ measurement every second
    *                  eCycle_10s,   //Pulse heating mode IAQ measurement every 10 seconds
    *                  eCycle_60s,   //Low power pulse heating mode IAQ measurement every 60 seconds

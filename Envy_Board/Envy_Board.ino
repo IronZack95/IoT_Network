@@ -27,6 +27,14 @@ unsigned long lastMsg = 0;
 #define MSG_BUFFER_SIZE  (50)
 char msg[MSG_BUFFER_SIZE];
 
+// Reconnections
+#define MAX_WIFI_ATTEMPT 30
+#define MAX_MQTT_ATTEMPT 5
+#define WifiSleep 20
+#define MqttSleep 60
+unsigned int WIFIAttempt = 0;
+unsigned int MQTTAttempt = 0;
+
 // Prototipi delle funzioni
 void ReadSensors();
 void SerialComunication();
@@ -163,6 +171,10 @@ void setup_wifi(){
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
+    WIFIAttempt++; 
+    if(WIFIAttempt >= MAX_WIFI_ATTEMPT){
+          Sleep(WifiSleep);  // sleep 20 secondi
+      }
   }
 
   randomSeed(micros());
@@ -171,6 +183,7 @@ void setup_wifi(){
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
+  WIFIAttempt = 0; 
 }
 
 
@@ -203,7 +216,8 @@ void reconnect() {
     clientId += String(random(0xffff), HEX);
     // Attempt to connect
     if (client.connect(clientId.c_str())) {
-      Serial.println("connected");
+      Serial.println("connected after "); Serial.print(MQTTAttempt); Serial.println(" attempts");
+      MQTTAttempt = 0;
       // Once connected, publish an announcement...
       client.publish(systemTopic, "start");
       // ... and resubscribe
@@ -214,6 +228,28 @@ void reconnect() {
       Serial.println(" try again in 5 seconds");
       // Wait 5 seconds before retrying
       delay(5000);
+      MQTTAttempt++; 
+      if(MQTTAttempt >= MAX_MQTT_ATTEMPT){
+            Sleep(MqttSleep);  // sleep 1 minuti
+        }
     }
   }
 }
+
+void Sleep(unsigned long t){
+  Serial.print("DEEP SLEEP MODE for "); Serial.print(t); Serial.println("s");
+  delay(5000); // 5 sec
+
+  // SEGNALE VISIVO SLEEP
+  digitalWrite(BUILTIN_LED, HIGH); // SPENGO led
+  delay(50);
+  digitalWrite(BUILTIN_LED, LOW); // ACCENDO led
+  delay(50);
+  digitalWrite(BUILTIN_LED, HIGH); // SPENGO led
+  delay(50);
+  digitalWrite(BUILTIN_LED, LOW); // ACCENDO led
+  delay(50);
+  digitalWrite(BUILTIN_LED, HIGH); // SPENGO led
+  ESP.deepSleep(t*1e6);
+  return;
+  }
