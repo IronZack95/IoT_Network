@@ -17,7 +17,7 @@ void setup_wifi(){
     MonitorSetup(1);
     WIFIAttempt++; 
     if(WIFIAttempt >= MAX_WIFI_ATTEMPT){
-          Sleep(20e6);  // sleep 20 secondi
+          Sleep(WifiSleep);  // sleep 20 secondi
       }
   }
 
@@ -79,18 +79,18 @@ void reconnect() {
       delay(5000);
       MQTTAttempt++; 
       if(MQTTAttempt >= MAX_MQTT_ATTEMPT){
-            Sleep(60e6);  // sleep 1 minuti
+            Sleep(MqttSleep);  // sleep 1 minuti
         }
     }
   }
 }
 
 void Sleep(unsigned long t){
-  Serial.print("DEEP SLEEP MODE for "); Serial.print(t/1e6); Serial.println("s");
+  Serial.print("DEEP SLEEP MODE for "); Serial.print(t); Serial.println("s");
   MonitorSleep(t);
   delay(5000); // 5 sec
   sensor.setMeasCycle(sensor.eClosed);
   sleepDisplay(&display);
-  ESP.deepSleep(t);
+  ESP.deepSleep(t*1e6);
   return;
   }

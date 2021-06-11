@@ -45,7 +45,8 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 // Reconnections
 #define MAX_WIFI_ATTEMPT 30
 #define MAX_MQTT_ATTEMPT 5
-
+#define WifiSleep 20
+#define MqttSleep 60
 unsigned int WIFIAttempt = 0;
 unsigned int MQTTAttempt = 0;
 
