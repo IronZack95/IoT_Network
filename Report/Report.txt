@@ -1,0 +1,148 @@
+\documentclass[12pt,a4paper]{article}
+\pdfpagewidth\paperwidth
+\pdfpageheight\paperheight
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ %total={170mm,257mm},
+ left=25mm,
+ top=35mm,
+ right=25mm,
+ bottom=35mm,
+ }
+
+% Paccchetti
+\usepackage{lipsum} % Just to automatically generate text
+\usepackage[italian, english]{babel} % La seconda lingua nell'ordine è quella che prevale
+\usepackage[latin1, utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{graphicx}
+\graphicspath{ {./Images/} }
+%\graphicspath{{./Feature Visualisation/}}
+
+\usepackage{tabularx}
+\usepackage{subfigure}
+\usepackage{afterpage}
+\usepackage{amsmath,amssymb}    
+\usepackage{mathtools}
+\usepackage{siunitx}        
+\usepackage{rotating}  
+\usepackage{fancyhdr}  
+\usepackage[scriptsize]{caption} 
+\usepackage{booktabs} % per le tabelle
+\usepackage{fancyhdr}
+\usepackage{verbatim} % multiline comments
+\usepackage{microtype}
+\usepackage{minted}
+\usepackage{hyperref}
+\usepackage{wrapfig}
+
+\hyphenation{a-gen-tiz-za-zio-ne}
+
+% Impaginazione
+
+\linespread{1.}
+
+\title{}
+\author{}
+
+\pagestyle{fancy}
+\lhead{Internet of Things}
+\chead{CO2 Env}
+\rhead{Zaccaria Eliseo Carrettoni}
+\newcommand{\Rarrow}{\mbox{\Large$\Rightarrow$}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\date{} % Non mette la data nel documento
+\begin{document}
+
+% Titolo e Autore
+\begin{titlepage}	
+	
+	\newcommand{\HRule}{\rule{\linewidth}{0.5mm}} % Defines a new command for horizontal lines, change thickness here
+	
+	\center % Centre everything on the page
+	
+    % Logo Università
+	\includegraphics[width=.4\textwidth]{LogoPolitecnicoMilano.png}\\[0.4cm]
+	\textsc{\LARGE}\\[0.3cm] % Main heading such as the name of your university/college
+	
+	% Corso di Laurea
+	\textsc{\large MSc. Music and Acoustic Engineering}\\[1cm] % Minor heading such as course title
+	
+	% Materia
+	\textsc{\Large Internet of Things - Final Project}\\[0.5cm] % Major heading such as course name
+	
+	% Titolo
+	\HRule\\[0.4cm]
+	{\huge\bfseries Environmental Carbon Dioxide Management System}\\[0.4cm] % Title of your document
+	\HRule\\[1.5cm]
+	
+	% Autore e Gruppo
+	{\large\textit{Author:}}\\
+	\textsc{Zaccaria Eliseo Carrettoni}\\\\
+	\\\\
+	 % Your name
+	\\ \textsc{[10504151]} \\\\
+	\vspace{1cm}
+	\vfill\vfill
+	
+\end{titlepage}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Inizio numerazione Pagine con Numeri Arabi
+\newpage
+\pagenumbering{arabic}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newpage
+ \section{Introduction}
+The goal of this project is to develop a sensor system, on hardware, with IoT technologies for monitoring various environmental parameters in my home's cellar, where we produce and store wine for family use every year. The main environmental parameters that I want to observe are humidity, temperature and percentage saturation of the CO2 level in the air, which is the gas that can most cause asphyxiation problems during the fermentation phase of wine in a closed place.
+In this project I want both to seek efficient and economical solutions but also to be complementary to the current state of my home computer network. The long-term objectives of this project are not limited to the collection of raw data of environmental parameters, but would like to make the whole system automatic and able to act on the environment through specific actuators autonomously, such as turning on the automatic ventilation system, heating or dehumidification of the cellar. 
+ \subsection{Network Map}
+As you can see in the Figure \ref{fig:Network Graph}, the physical structure of the network is divided between two wifi routers connected in LAN (20m away from each other), one of which is the main router connected to the internet and the other works as an Access Point. The sensors in the cellar are connected via wifi to the main router (10m away in a straight line). The sensors and actuators communicate over the network using the MQTT protocol to my Homelab server, which will manage the logic and communications of the entire local network, and make it scalable.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=1.02\linewidth]{"network graph.png"}
+	\caption{Architecture Schematic}
+	\label{fig:Network Graph}
+\end{figure}
+
+\newpage
+\section{Server Side}
+
+\subsection{Architecture}
+
+\begin{wrapfigure}{r}{0.25\textwidth}
+\includegraphics[width=1.2\linewidth]{"Server graph2.png"} 
+\caption{Server Graph}
+\label{fig:Server graph}
+\end{wrapfigure}
+
+I have a DELL workstation that I use as a Homelab Server, only from SSH command line, running a Linux Ubuntu Server 20.04 LTS operating system. To meet all the needs of optimizations and compatibility, the best solution was to use Docker container. Dockerization allows programs to run bypassing the SO specific linux distribution and using only the linux kernel, this allows a better isolation of the softwares and a valid alternative to the virtual machine, Figure \ref{fig:Server graph}.\\
+First of all, it was necessary to create a network in docker that acts as a bridge between the two main applications placed in the containers, Node-Red and Mosquitto Broker. The bridge allows to collect all the ports shown by the programs in a single virtual environment and show them outside of docker in the network interface.
+It was also necessary to enable port forwarding from the main router and assign static IP to the server.
+
+\subsection{Mosquitto Broker}
+Mosquitto Docker version broker is responsible for handling all MQTT message traffic in the local network. Mainly it will act as an intermediary in the communication between the mote and Node-Red. In the initial configuration of Docker-compose I established that the Mosquitto container must start working when the server starts up or be restarted autonomously in case of failure.
+\subsection{Node-Red}
+
+
+% \newpage
+\section{Mote Side}
+
+\subsection{ESP8266}
+
+\subsection{Environment Board}
+
+\subsection{Relay}
+
+\end{document}
