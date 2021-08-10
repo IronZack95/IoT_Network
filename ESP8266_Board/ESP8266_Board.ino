@@ -42,6 +42,11 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 // dht11 pin
 #define DHT11PIN 0
 
+#define interruptPin  15 //Button
+#define LED1 12
+#define LED2 13
+
+
 // Reconnections
 #define MAX_WIFI_ATTEMPT 30
 #define MAX_MQTT_ATTEMPT 5
@@ -97,6 +102,7 @@ void ReadCO2();
 void setup_wifi();
 void callback(char* topic, byte* payload, unsigned int length);
 void reconnect();
+void ICACHE_RAM_ATTR ISR();
 
 // ------------------ SETUP ------------------
 void setup() {
@@ -110,6 +116,14 @@ void setup() {
   // Inizializzo Pin
   pinMode(BUILTIN_LED, OUTPUT);
   digitalWrite(BUILTIN_LED, HIGH); // spengo led
+
+  pinMode(interruptPin, INPUT_PULLUP); 
+  attachInterrupt(digitalPinToInterrupt(interruptPin), ISR, FALLING); 
+
+  pinMode(LED1, OUTPUT);
+  digitalWrite(LED1, HIGH); // spengo led
+  pinMode(LED2, OUTPUT);
+  digitalWrite(LED2, HIGH); // spengo led
   
   // Inizializzo Display
   if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
