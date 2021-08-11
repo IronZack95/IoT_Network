@@ -120,7 +120,7 @@ void setup() {
   digitalWrite(BUILTIN_LED, HIGH); // spengo led
 
   pinMode(interruptPin, INPUT_PULLUP); 
-  attachInterrupt(digitalPinToInterrupt(interruptPin), ISR, CHANGE); 
+  attachInterrupt(digitalPinToInterrupt(interruptPin), ISR, RISING); 
   
   pinMode(LED1, OUTPUT);
   digitalWrite(LED1, HIGH); // spengo led
@@ -210,7 +210,6 @@ void loop() {
     Serial.print("Publish DHT11 HUM message: ");
     Serial.println(msg);
     client.publish(humDTopic, msg);
-
     
     
     //now = millis();
