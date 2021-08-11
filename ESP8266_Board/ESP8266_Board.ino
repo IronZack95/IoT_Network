@@ -49,9 +49,9 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 // Reconnections
 #define MAX_WIFI_ATTEMPT 30
-#define MAX_MQTT_ATTEMPT 5
-#define WifiSleep 20
-#define MqttSleep 60
+#define MAX_MQTT_ATTEMPT 10
+#define WifiSleep 60*5
+#define MqttSleep 60*10
 unsigned int WIFIAttempt = 0;
 unsigned int MQTTAttempt = 0;
 
@@ -60,8 +60,10 @@ int samples[NUMSAMPLES];
 #define DELAY_MSG 2000
 
 // Wifi definitions and MQTT topic
-const char* ssid = "Nonno - Network";
-const char* password = "496pddpb4ah7yygy";
+//const char* ssid = "Nonno - Network";
+//const char* password = "496pddpb4ah7yygy";
+const char* ssid = "Iron Network";
+const char* password = "Astr0-N0nn0";
 const char* mqtt_server = "192.168.1.100";
 #define port 1883
 
@@ -118,8 +120,8 @@ void setup() {
   digitalWrite(BUILTIN_LED, HIGH); // spengo led
 
   pinMode(interruptPin, INPUT_PULLUP); 
-  attachInterrupt(digitalPinToInterrupt(interruptPin), ISR, FALLING); 
-
+  attachInterrupt(digitalPinToInterrupt(interruptPin), ISR, CHANGE); 
+  
   pinMode(LED1, OUTPUT);
   digitalWrite(LED1, HIGH); // spengo led
   pinMode(LED2, OUTPUT);

@@ -16,7 +16,7 @@ void MonitorSleep(unsigned long t) {
     display.setTextColor(SSD1306_WHITE); // Draw white text
     display.setCursor(0, 0);     // Start at top-left corner
     display.println(F("DEEP SLEEP")); 
-    display.print(t);display.println(F("s"));
+    display.print(t/60);display.println(F("min"));
     display.println(ssid);
     display.display();
   
