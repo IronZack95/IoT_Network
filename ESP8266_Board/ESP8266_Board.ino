@@ -43,15 +43,18 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 #define DHT11PIN 0
 
 #define interruptPin  15 //Button
-#define LED1 12
-#define LED2 13
+#define LED2 13 // ROSSO
+#define LED1 12 // VERDE
+#define DISPLAYTIME 20*1000  //20 sec
 
+unsigned long previousMillis = 0;
+bool  DisplayStatus = true;     //acceso
 
 // Reconnections
 #define MAX_WIFI_ATTEMPT 30
-#define MAX_MQTT_ATTEMPT 10
-#define WifiSleep 60*5
-#define MqttSleep 60*10
+#define MAX_MQTT_ATTEMPT 30
+#define WifiSleep 60*30  // 30 minuti
+#define MqttSleep 60*60 // 60 minuti
 unsigned int WIFIAttempt = 0;
 unsigned int MQTTAttempt = 0;
 
@@ -60,10 +63,10 @@ int samples[NUMSAMPLES];
 #define DELAY_MSG 2000
 
 // Wifi definitions and MQTT topic
-//const char* ssid = "Nonno - Network";
-//const char* password = "496pddpb4ah7yygy";
-const char* ssid = "Iron Network";
-const char* password = "Astr0-N0nn0";
+const char* ssid = "Nonno - Network";
+const char* password = "496pddpb4ah7yygy";
+//const char* ssid = "Iron Network";
+//const char* password = "Astr0-N0nn0";
 const char* mqtt_server = "192.168.1.100";
 #define port 1883
 
@@ -123,9 +126,9 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(interruptPin), ISR, RISING); 
   
   pinMode(LED1, OUTPUT);
-  digitalWrite(LED1, HIGH); // spengo led
+  digitalWrite(LED1, LOW); // spengo led
   pinMode(LED2, OUTPUT);
-  digitalWrite(LED2, HIGH); // spengo led
+  digitalWrite(LED2, LOW); // spengo led
   
   // Inizializzo Display
   if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
@@ -159,6 +162,10 @@ void setup() {
   setup_wifi();
   client.setServer(mqtt_server, port);
   client.setCallback(callback);
+
+  //interrupt
+  previousMillis =  millis();
+  DisplayStatus = true;
 }
 
 
@@ -177,6 +184,17 @@ void loop() {
       }
       client.loop();
     }
+
+    // tutto funziona nella norma
+    digitalWrite(LED1, HIGH);
+
+    //logica display
+    if(millis()- previousMillis >= DISPLAYTIME && DisplayStatus == true){
+      Serial.println("SPENGO DISPLAY");
+      sleepDisplay(&display);
+      DisplayStatus = false;
+      }
+
     
     // calcolo la temperatura Analogica
     AnalogTemp = Temperature();
@@ -197,7 +215,7 @@ void loop() {
     client.publish(CO2Topic, msg);
         
     snprintf (msg, MSG_BUFFER_SIZE, "%1d", TVOC);
-    Serial.print("Publish CO2 message: ");
+    Serial.print("Publish TVOC message: ");
     Serial.println(msg);
     client.publish(TVOCTopic, msg);
     

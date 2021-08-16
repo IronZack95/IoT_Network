@@ -2,6 +2,7 @@ void setup_wifi(){
   
   delay(10);
   // We start by connecting to a WiFi network
+  digitalWrite(LED1, LOW);
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
@@ -47,14 +48,17 @@ void callback(char* topic, byte* payload, unsigned int length) {
   // Switch on the LED if an 1 was received as first character
   if ((char)payload[0] == '1') {
     digitalWrite(BUILTIN_LED, LOW);   // Turn the LED on (Note that LOW is the voltage level
+    digitalWrite(LED2, HIGH);
   } else {
     digitalWrite(BUILTIN_LED, HIGH);  // Turn the LED off by making the voltage HIGH
+    digitalWrite(LED2, LOW);
   }
 
 }
 
 void reconnect() {
   // Loop until we're reconnected
+  digitalWrite(LED1, LOW);
   while (!client.connected()) {
     Serial.print("Attempting MQTT connection...");
     MonitorReconnect(0);
