@@ -19,6 +19,7 @@
 >- the LOG file obtained from the microcontroller serial port
 >- Cost-sheet
 >- Report
+>- docker-compose.yaml file for server side
 >- One of output CSV file (16_8_2021.csv)
 
 ## OVERLEAF LaTeX REPORT LINK:
