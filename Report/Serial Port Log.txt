@@ -1,0 +1,215 @@
+10:06:47.991 -> ----------Iron ESP01----------
+10:06:47.991 -> ----------by Z A C K----------
+10:06:48.025 -> ------------------------------
+10:06:51.143 -> 
+10:06:51.143 -> Connecting to Nonno - Network
+10:06:51.655 -> ...........
+10:06:57.485 -> WiFi connected after 11 attempts
+10:06:57.485 -> IP address: 
+10:06:57.485 -> 192.168.1.102
+10:06:59.498 -> Attempting MQTT connection...connected after 
+10:06:59.532 -> 0 attempts
+10:06:59.600 -> Average analog reading 508.00
+10:06:59.600 -> Thermistor resistance 9864.08
+10:06:59.600 -> Temperature 25.31 °C
+10:06:59.600 -> Publish Analog TMP message: 25.308313 °C
+10:06:59.600 -> CO2: 400ppm, TVOC: 0ppb
+10:06:59.634 -> Read DHT11 failedPublish CO2 message: 400
+10:06:59.634 -> Publish TVOC message: 0
+10:06:59.634 -> Publish DHT11 TMP message: 0
+10:06:59.634 -> Publish DHT11 HUM message: 0
+10:06:59.634 -> ----------------------------------------------
+10:07:04.698 -> Average analog reading 507.40
+10:07:04.698 -> Thermistor resistance 9840.96
+10:07:04.698 -> Temperature 25.36 °C
+10:07:04.698 -> Publish Analog TMP message: 25.361231 °C
+10:07:04.698 -> CO2: 400ppm, TVOC: 0ppb
+10:07:04.732 -> Read DHT11 failedPublish CO2 message: 400
+10:07:04.732 -> Publish TVOC message: 0
+10:07:04.732 -> Publish DHT11 TMP message: 0
+10:07:04.732 -> Publish DHT11 HUM message: 0
+10:07:04.732 -> ----------------------------------------------
+10:07:09.796 -> Average analog reading 513.00
+10:07:09.796 -> Thermistor resistance 10058.82
+10:07:09.796 -> Temperature 24.87 °C
+10:07:09.796 -> Publish Analog TMP message: 24.868067 °C
+10:07:09.796 -> CO2: 400ppm, TVOC: 0ppb
+10:07:09.831 -> Read DHT11 failedPublish CO2 message: 400
+10:07:09.831 -> Publish TVOC message: 0
+10:07:09.831 -> Publish DHT11 TMP message: 0
+10:07:09.831 -> Publish DHT11 HUM message: 0
+10:07:09.831 -> ----------------------------------------------
+10:07:14.895 -> Average analog reading 509.20
+10:07:14.895 -> Thermistor resistance 9910.47
+10:07:14.895 -> Temperature 25.20 °C
+10:07:14.895 -> Publish Analog TMP message: 25.202539 °C
+10:07:14.895 -> CO2: 400ppm, TVOC: 0ppb
+10:07:14.930 -> Publish CO2 message: 400
+10:07:14.930 -> Publish TVOC message: 0
+10:07:14.930 -> Publish DHT11 TMP message: 28
+10:07:14.930 -> Publish DHT11 HUM message: 33
+10:07:14.930 -> ----------------------------------------------
+10:07:19.953 -> SPENGO DISPLAY
+10:07:19.988 -> Average analog reading 507.60
+10:07:19.988 -> Thermistor resistance 9848.66
+10:07:19.988 -> Temperature 25.34 °C
+10:07:19.988 -> Publish Analog TMP message: 25.343561 °C
+10:07:20.022 -> CO2: 400ppm, TVOC: 0ppb
+10:07:20.022 -> Publish CO2 message: 400
+10:07:20.022 -> Publish TVOC message: 0
+10:07:20.022 -> Publish DHT11 TMP message: 28
+10:07:20.022 -> Publish DHT11 HUM message: 33
+10:07:20.056 -> ----------------------------------------------
+10:07:25.096 -> Average analog reading 507.40
+10:07:25.096 -> Thermistor resistance 9840.96
+10:07:25.096 -> Temperature 25.36 °C
+10:07:25.096 -> Publish Analog TMP message: 25.361231 °C
+10:07:25.096 -> CO2: 400ppm, TVOC: 0ppb
+10:07:25.129 -> Publish CO2 message: 400
+10:07:25.129 -> Publish TVOC message: 0
+10:07:25.129 -> Publish DHT11 TMP message: 28
+10:07:25.129 -> Publish DHT11 HUM message: 33
+10:07:25.129 -> ----------------------------------------------
+10:07:30.181 -> Average analog reading 507.00
+10:07:30.181 -> Thermistor resistance 9825.58
+10:07:30.181 -> Temperature 25.40 °C
+10:07:30.216 -> Publish Analog TMP message: 25.396509 °C
+10:07:30.216 -> CO2: 400ppm, TVOC: 0ppb
+10:07:30.216 -> Publish CO2 message: 400
+10:07:30.216 -> Publish TVOC message: 0
+10:07:30.216 -> Publish DHT11 TMP message: 28
+10:07:30.216 -> Publish DHT11 HUM message: 33
+10:07:30.250 -> ----------------------------------------------
+10:07:35.581 -> Average analog reading 506.80
+10:07:35.581 -> Thermistor resistance 9817.90
+10:07:35.614 -> Temperature 25.41 °C
+10:07:35.614 -> Publish Analog TMP message: 25.414148 °C
+10:07:35.614 -> CO2: 400ppm, TVOC: 0ppb
+10:07:35.614 -> Publish CO2 message: 400
+10:07:35.614 -> Publish TVOC message: 0
+10:07:35.614 -> Publish DHT11 TMP message: 28
+10:07:35.614 -> Publish DHT11 HUM message: 33
+10:07:35.649 -> ----------------------------------------------
+10:07:40.509 -> ACCENDO DISPLAY
+10:07:40.647 -> Attempting MQTT connection...connected after 
+10:07:40.682 -> 0 attempts
+10:07:40.751 -> Average analog reading 506.00
+10:07:40.751 -> Thermistor resistance 9787.23
+10:07:40.751 -> Temperature 25.48 °C
+10:07:40.751 -> Publish Analog TMP message: 25.484797 °C
+10:07:40.751 -> CO2: 400ppm, TVOC: 0ppb
+10:07:40.786 -> Read DHT11 failedPublish CO2 message: 400
+10:07:40.786 -> Publish TVOC message: 0
+10:07:40.786 -> Publish DHT11 TMP message: 28
+10:07:40.786 -> Publish DHT11 HUM message: 33
+10:07:40.786 -> ----------------------------------------------
+10:07:45.830 -> Average analog reading 507.20
+10:07:45.830 -> Thermistor resistance 9833.27
+10:07:45.865 -> Temperature 25.38 °C
+10:07:45.865 -> Publish Analog TMP message: 25.378870 °C
+10:07:45.865 -> CO2: 400ppm, TVOC: 0ppb
+10:07:45.865 -> Publish CO2 message: 400
+10:07:45.865 -> Publish TVOC message: 0
+10:07:45.865 -> Publish DHT11 TMP message: 28
+10:07:45.898 -> Publish DHT11 HUM message: 33
+10:07:45.898 -> ----------------------------------------------
+10:07:50.950 -> Average analog reading 507.20
+10:07:50.950 -> Thermistor resistance 9833.27
+10:07:50.950 -> Temperature 25.38 °C
+10:07:50.950 -> Publish Analog TMP message: 25.378870 °C
+10:07:50.950 -> CO2: 400ppm, TVOC: 0ppb
+10:07:50.984 -> Publish CO2 message: 400
+10:07:50.984 -> Publish TVOC message: 0
+10:07:50.984 -> Publish DHT11 TMP message: 28
+10:07:50.984 -> Publish DHT11 HUM message: 33
+10:07:50.984 -> ----------------------------------------------
+10:07:56.050 -> Average analog reading 506.60
+10:07:56.050 -> Thermistor resistance 9810.23
+10:07:56.050 -> Temperature 25.43 °C
+10:07:56.050 -> Publish Analog TMP message: 25.431818 °C
+10:07:56.050 -> CO2: 400ppm, TVOC: 0ppb
+10:07:56.085 -> Publish CO2 message: 400
+10:07:56.085 -> Publish TVOC message: 0
+10:07:56.085 -> Publish DHT11 TMP message: 28
+10:07:56.085 -> Publish DHT11 HUM message: 33
+10:07:56.085 -> ----------------------------------------------
+10:08:01.086 -> SPENGO DISPLAY
+10:08:01.154 -> Average analog reading 507.00
+10:08:01.154 -> Thermistor resistance 9825.58
+10:08:01.154 -> Temperature 25.40 °C
+10:08:01.154 -> Publish Analog TMP message: 25.396509 °C
+10:08:01.154 -> CO2: 400ppm, TVOC: 0ppb
+10:08:01.187 -> Publish CO2 message: 400
+10:08:01.187 -> Publish TVOC message: 0
+10:08:01.187 -> Publish DHT11 TMP message: 28
+10:08:01.187 -> Publish DHT11 HUM message: 33
+10:08:01.187 -> ----------------------------------------------
+10:08:06.240 -> Average analog reading 507.60
+10:08:06.240 -> Thermistor resistance 9848.66
+10:08:06.240 -> Temperature 25.34 °C
+10:08:06.240 -> Publish Analog TMP message: 25.343561 °C
+10:08:06.240 -> CO2: 400ppm, TVOC: 0ppb
+10:08:06.274 -> Publish CO2 message: 400
+10:08:06.274 -> Publish TVOC message: 0
+10:08:06.274 -> Publish DHT11 TMP message: 28
+10:08:06.274 -> Publish DHT11 HUM message: 33
+10:08:06.274 -> ----------------------------------------------
+
+Example of deep sleep case:
+
+09:52:16.733 -> ----------Iron ESP01----------
+09:52:16.733 -> ----------by Z A C K----------
+09:52:16.733 -> ------------------------------
+09:52:19.640 -> 
+09:52:19.640 -> Connecting to Nonno - Network
+09:52:20.153 -> ..............................DEEP SLEEP MODE for 1800s
+
+Example whith few transmission and disconnection:
+
+09:58:35.941 -> ----------Iron ESP01----------
+09:58:35.941 -> ----------by Z A C K----------
+09:58:35.941 -> ------------------------------
+09:58:39.088 -> 
+09:58:39.088 -> Connecting to Nonno - Network
+09:58:39.599 -> .................
+09:58:48.371 -> WiFi connected after 17 attempts
+09:58:48.371 -> IP address: 
+09:58:48.371 -> 192.168.1.102
+09:58:50.361 -> Attempting MQTT connection...failed, rc=-2 try again in 5 seconds
+09:59:00.528 -> Attempting MQTT connection...connected after 
+09:59:00.562 -> 1 attempts
+09:59:00.631 -> Average analog reading 511.40
+09:59:00.631 -> Thermistor resistance 9996.09
+09:59:00.631 -> Temperature 25.01 °C
+09:59:00.631 -> Publish Analog TMP message: 25.008783 °C
+09:59:00.664 -> CO2: 400ppm, TVOC: 0ppb
+09:59:00.664 -> Read DHT11 failedPublish CO2 message: 400
+09:59:00.664 -> Publish TVOC message: 0
+09:59:00.664 -> Publish DHT11 TMP message: 0
+09:59:00.664 -> Publish DHT11 HUM message: 0
+09:59:00.699 -> ----------------------------------------------
+09:59:05.726 -> Average analog reading 511.80
+09:59:05.726 -> Thermistor resistance 10011.74
+09:59:05.726 -> Temperature 24.97 °C
+09:59:05.726 -> Publish Analog TMP message: 24.973597 °C
+09:59:05.761 -> CO2: 400ppm, TVOC: 0ppb
+09:59:05.761 -> Publish CO2 message: 400
+09:59:05.761 -> Publish TVOC message: 0
+09:59:05.761 -> Publish DHT11 TMP message: 28
+09:59:05.761 -> Publish DHT11 HUM message: 34
+09:59:05.795 -> ----------------------------------------------
+09:59:10.784 -> SPENGO DISPLAY
+09:59:10.852 -> Average analog reading 509.80
+09:59:10.852 -> Thermistor resistance 9933.75
+09:59:10.852 -> Temperature 25.15 °C
+09:59:10.852 -> Publish Analog TMP message: 25.149683 °C
+09:59:10.852 -> CO2: 400ppm, TVOC: 0ppb
+09:59:10.886 -> Publish CO2 message: 400
+09:59:10.886 -> Publish TVOC message: 0
+09:59:10.886 -> Publish DHT11 TMP message: 28
+09:59:10.886 -> Publish DHT11 HUM message: 34
+09:59:10.886 -> ----------------------------------------------
+09:59:15.909 -> 
+09:59:15.909 -> Connecting to Nonno - Network
+09:59:16.419 -> ..............................DEEP SLEEP MODE for 1800s
+
