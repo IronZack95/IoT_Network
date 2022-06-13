@@ -8,8 +8,8 @@ SHT3X sht30(0x44); //adress of SHT30
 const int analogInPin = A0;  //ADC-pin of AZ-Envy for the gas sensor
 
 // Wifi definitions and MQTT topic
-const char* ssid = "Nonno - Network";
-const char* password = "496pddpb4ah7yygy";
+const char* ssid = "";
+const char* password = "";
 const char* mqtt_server = "192.168.1.100";
 #define port 1883
 
@@ -49,7 +49,7 @@ int sensorValue = 0;
 float old_temperature = 0;
 float old_humid = 0;
 int old_sensorValue = 0;
-float temperature_deviation = 4.0; //enter the deviation from the mq2 due to the resulting heat in order to calibrate the temperature value 
+float temperature_deviation = 4.0; //enter the deviation from the mq2 due to the resulting heat in order to calibrate the temperature value
 float temperature_calibrated = 0; //final value
 
 // SETUP
@@ -63,7 +63,7 @@ void setup(){
 
   // Analog pin
   pinMode(analogInPin,INPUT);       //set ADC-pin as a input
-  
+
   //Inizializzo Led
   pinMode(BUILTIN_LED, OUTPUT);
   digitalWrite(BUILTIN_LED, HIGH); // spengo led
@@ -86,7 +86,7 @@ void loop() {
       }
       client.loop();
     }
-    
+
   // Leggo i sensori
   ReadSensors();
 
@@ -101,7 +101,7 @@ void loop() {
     Serial.println(msg);
     client.publish(tempTopic, msg);
   }
-  
+
   if(humid != old_humid){
     old_humid = humid;
     snprintf (msg, MSG_BUFFER_SIZE, "%1f", humid);
@@ -109,7 +109,7 @@ void loop() {
     Serial.println(msg);
     client.publish(humTopic, msg);
   }
-  
+
   if(sensorValue != old_sensorValue){
     old_sensorValue = sensorValue;
     snprintf (msg, MSG_BUFFER_SIZE, "%1d", sensorValue);
@@ -119,9 +119,9 @@ void loop() {
   }
 
   Serial.println("----------------------------------------------"); //print to serial monitor
- 
+
   //digitalWrite(BUILTIN_LED,HIGH);//turn the integrated led on
-  
+
   delay(5000);
 
   //digitalWrite(BUILTIN_LED,LOW);//turn the integrated led off
@@ -139,7 +139,7 @@ void ReadSensors(){
   }
 
 void SerialComunication(){
-  
+
   //-SHT30-//
   if(sht30.get()==0){
     Serial.print("Temperature in Celsius: ");
@@ -171,7 +171,7 @@ void setup_wifi(){
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
-    WIFIAttempt++; 
+    WIFIAttempt++;
     if(WIFIAttempt >= MAX_WIFI_ATTEMPT){
           Sleep(WifiSleep);  // sleep 20 secondi
       }
@@ -183,7 +183,7 @@ void setup_wifi(){
   Serial.println("WiFi connected");
   Serial.println("IP address: ");
   Serial.println(WiFi.localIP());
-  WIFIAttempt = 0; 
+  WIFIAttempt = 0;
 }
 
 
@@ -228,7 +228,7 @@ void reconnect() {
       Serial.println(" try again in 5 seconds");
       // Wait 5 seconds before retrying
       delay(5000);
-      MQTTAttempt++; 
+      MQTTAttempt++;
       if(MQTTAttempt >= MAX_MQTT_ATTEMPT){
             Sleep(MqttSleep);  // sleep 1 minuti
         }

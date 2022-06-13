@@ -27,18 +27,18 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 #define CO2Address  0x5A
 
 // which analog pin to connect
-#define THERMISTORPIN A0         
+#define THERMISTORPIN A0
 // resistance at 25 degrees C
-#define THERMISTORNOMINAL 10000      
+#define THERMISTORNOMINAL 10000
 // temp. for nominal resistance (almost always 25 C)
-#define TEMPERATURENOMINAL 25   
+#define TEMPERATURENOMINAL 25
 // how many samples to take and average, more takes longer
 // but is more 'smooth'
 #define NUMSAMPLES 5
 // The beta coefficient of the thermistor (usually 3000-4000)
 #define BCOEFFICIENT 3950
 // the value of the 'other' resistor
-#define SERIESRESISTOR 10000    
+#define SERIESRESISTOR 10000
 // dht11 pin
 #define DHT11PIN 0
 
@@ -63,10 +63,10 @@ int samples[NUMSAMPLES];
 #define DELAY_MSG 2000
 
 // Wifi definitions and MQTT topic
-const char* ssid = "Nonno - Network";
-const char* password = "496pddpb4ah7yygy";
-//const char* ssid = "Iron Network";
-//const char* password = "Astr0-N0nn0";
+const char* ssid = "";
+const char* password = "";
+//const char* ssid = "";
+//const char* password = "";
 const char* mqtt_server = "192.168.1.100";
 #define port 1883
 
@@ -117,19 +117,19 @@ void setup() {
   Serial.println("----------Iron ESP01----------"); //print to serial monitor
   Serial.println("----------by Z A C K----------"); //print to serial monitor
   Serial.println("------------------------------"); //print to serial monitor
-  
+
   // Inizializzo Pin
   pinMode(BUILTIN_LED, OUTPUT);
   digitalWrite(BUILTIN_LED, HIGH); // spengo led
 
-  pinMode(interruptPin, INPUT_PULLUP); 
-  attachInterrupt(digitalPinToInterrupt(interruptPin), ISR, RISING); 
-  
+  pinMode(interruptPin, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(interruptPin), ISR, RISING);
+
   pinMode(LED1, OUTPUT);
   digitalWrite(LED1, LOW); // spengo led
   pinMode(LED2, OUTPUT);
   digitalWrite(LED2, LOW); // spengo led
-  
+
   // Inizializzo Display
   if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
@@ -157,7 +157,7 @@ void setup() {
    *                  }eCycle_t;
    */
   sensor.setMeasCycle(sensor.eCycle_250ms);
-    
+
   // Inizializzo WiFi
   setup_wifi();
   client.setServer(mqtt_server, port);
@@ -173,7 +173,7 @@ void setup() {
 
 // ------------------ MAIN LOOP ------------------
 void loop() {
-  
+
     //verifico di essere connesso al wifi
     if(WiFi.status() != WL_CONNECTED){
       setup_wifi();
@@ -195,7 +195,7 @@ void loop() {
       DisplayStatus = false;
       }
 
-    
+
     // calcolo la temperatura Analogica
     AnalogTemp = Temperature();
     snprintf (msg, MSG_BUFFER_SIZE, "%1f °C", AnalogTemp);
@@ -213,23 +213,23 @@ void loop() {
     Serial.print("Publish CO2 message: ");
     Serial.println(msg);
     client.publish(CO2Topic, msg);
-        
+
     snprintf (msg, MSG_BUFFER_SIZE, "%1d", TVOC);
     Serial.print("Publish TVOC message: ");
     Serial.println(msg);
     client.publish(TVOCTopic, msg);
-    
+
     snprintf (msg, MSG_BUFFER_SIZE, "%1d", DigitalTemp);
     Serial.print("Publish DHT11 TMP message: ");
     Serial.println(msg);
     client.publish(tempDTopic, msg);
-    
+
     snprintf (msg, MSG_BUFFER_SIZE, "%1d", DigitalHumidity);
     Serial.print("Publish DHT11 HUM message: ");
     Serial.println(msg);
     client.publish(humDTopic, msg);
-    
-    
+
+
     //now = millis();
     MonitorSensors();
 
